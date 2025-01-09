@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 # Local Modules
 from plottingModule import systemHistPlot, systemBoxPlot, systemStairPlot, systemMultiLinePlot
-from reportGeneratingModule import create_analytics_report
+from reportGeneratingModule import getFileName
 
 def setParameterValues(parameterList):
     global nservers, filesCo, iatCo, filesDk, iatDk
@@ -88,6 +88,7 @@ def do_animation():
     global tgMinutesLast, wtMinutesLast, aaMinutesLast, tiMinutesLast, meMinutesLast, fsMinutesLast
     global filesSvLast, filesTgLast, filesWtLast, meanWtLast, devWtLast, timeWindowYearsLast
     global filesAaLast, filesTiLast, filesMeLast, filesFsLast
+    global monitorCo
 
     xSlider = 50
     ySlider = -47.5
@@ -98,6 +99,7 @@ def do_animation():
     yMonitor = 900
     
     videoFilePath = "./capDevDataIngestSim/video/"
+    # videoFilePath = "./video/"
 
     # set global animation parameters    
     env.animation_parameters(
@@ -106,8 +108,7 @@ def do_animation():
         background_color="30%gray",
         height = simHeight,
         width = simWidth, 
-        modelname = "CapDev Data Ingestion Process Model",
-        title = "CapDev Data Ingestion Process Model", 
+        title = "CapDev Data Ingestion Process Model",
         video = videoFilePath + simFileName + "capDevSim.avi"
     )
     
@@ -133,28 +134,30 @@ def do_animation():
         global monitorType, monitorColor
         # creates 14 animated monitors from lists of monitor parameter values
 
-        monitorType = [system.length_of_stay, servers.requesters().length, fileCo.requesters().length, 
-            fileDk.requesters().length, fileMa.requesters().length, fileNj.requesters().length, fileAa.requesters().length,
-            fileMe.requesters().length, fileRd.requesters().length, fileSv.requesters().length, fileTg.requesters().length,
-            fileWt.requesters().length, fileTi.requesters().length, fileFs.requesters().length]
+        monitorType = [system.length_of_stay, system.length, sysCo.length, 
+            sysDk.length, sysMa.length, sysNj.length, sysAa.length,
+            sysMe.length, sysRd.length, sysSv.length, sysTg.length,
+            sysWt.length, sysTi.length, sysFs.length]
         
         xOffset = [0, 0, 0, 0, 0, 0, 0, 0, 675, 675, 675, 675, 675, 675]
         
-        yOffset = [-50, -150, -250, -350, -450, -550, -650, -750, -250, -350, -450, -550, -650, -750]
+        yOffset = [-25, -125, -250, -350, -450, -550, -650, -750, -250, -350, -450, -550, -650, -750]
         
         wOffset = [-200, -200, -875, -875, -875, -875, -875, -875, -875, -875, -875, -875, 
             -875, -875]
         
+        vScale = [10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+        
         monitorColor = ["white", "white", "red", "yellow", "blue", "orange", "tomato", "goldenrod",
             "green", "purple", "peru", "teal", "yellowgreen", "violet"]
 
-        monitorTitle = ["Time in data file queue.  Mean ={:10.2f}", "Number of data files in the queue.  Mean ={:10.2f}", 
-            "Number of Corian (CO) files in the queue. Mean ={:10.2f}", "Number of Duke (DK) files in the queue. Mean ={:10.2f}", 
-            "Number of L-Madis (MA) files in the queue. Mean ={:10.2f}", "Number of Ninja (NJ) files in the queue. Mean ={:10.2f}",
-            "Number of Aerial Armor files in the queue. Mean ={:10.2f}", "Number of Medusa files in the queue. Mean ={:10.2f}",
-            "Number of RD-SUADS (RD) files in the queue. Mean ={:10.2f}", "Number of Skyview (SV) files in the queue. Mean ={:10.2f}",
-            "Number of TGS (TG) files in the queue. Mean ={:10.2f}", "Number of Windtalker (WT) files in the queue. Mean ={:10.2f}",
-            "Number of Titan files in the queue. Mean ={:10.2f}", "Number of FS/MLIDS files in the queue. Mean ={:10.2f}"]
+        monitorTitle = ["Time in data file queue.  Mean ={:10.2f}   Days", "Number of data files in the queue.  Mean ={:10.2f}   Files", 
+            "Number of Corian (CO) files in the queue. Mean ={:10.2f}   Files", "Number of Duke (DK) files in the queue. Mean ={:10.2f}   Files", 
+            "Number of L-Madis (MA) files in the queue. Mean ={:10.2f}   Files", "Number of Ninja (NJ) files in the queue. Mean ={:10.2f}   Files",
+            "Number of Aerial Armor files in the queue. Mean ={:10.2f}   Files", "Number of Medusa files in the queue. Mean ={:10.2f}   Files",
+            "Number of RD-SUADS (RD) files in the queue. Mean ={:10.2f}   Files", "Number of Skyview (SV) files in the queue. Mean ={:10.2f}   Files",
+            "Number of TGS (TG) files in the queue. Mean ={:10.2f}   Files", "Number of Windtalker (WT) files in the queue. Mean ={:10.2f}   Files",
+            "Number of Titan files in the queue. Mean ={:10.2f}   Files", "Number of FS/MLIDS files in the queue. Mean ={:10.2f}   Files"]
       
         sim.AnimateMonitor(
             monitorType[j],
@@ -165,6 +168,7 @@ def do_animation():
             width=env.width() + wOffset[j],
             linecolor=monitorColor[j],
             horizontal_scale=10,
+            vertical_scale=vScale[j],
             title=lambda: monitorTitle[j].format(monitorType[j].mean()),
         )
 
@@ -413,21 +417,21 @@ def do_animation():
                     "CO Files", "DK Files", "MA Files", "NJ Files", "AA Files", "ME Files", "RD Files", "SV Files", 
                     "TG Files", "WT Files", "WT Avg", "WT Dev", "TI Files", "FS Files"]
     sliderXvalue = [0, 100, 170, 240, 310, 380, 450,
-                    520, 590, 660, 730, 870, 940, 1225,
+                    520, 590, 660, 755, 920, 990, 1225,
                     100, 170, 240, 310, 380, 450, 520, 590, 
-                    660, 730, 800, 800, 870, 940]
-    sliderYvalue = [-25, -25, -25, -25, -25, -25, -25, 
-                    -25, -25, -25, -25, -25, -25, -25, 
-                    -85, -85, -85, -85, -85, -85, -85, -85, 
-                    -85, -85, -25, -85, -85, -85]
+                    660, 755, 825, 825, 920, 990]
+    sliderYvalue = [25, 25, 25, 25, 25, 25, 25, 
+                    25, 25, 25, 25, 25, 25, 25, 
+                    -35, -35, -35, -35, -35, -35, -35, -35, 
+                    -35, -35, 25, -35, -35, -35]
     sliderVar = [nservers, coMinutes, dkMinutes, maMinutes, njMinutes, aaMinutes, meMinutes, 
                  rdMinutes, svMinutes, tgMinutes, wtMinutes, tiMinutes, fsMinutes, timeWindowYears, 
                  filesCo, filesDk, filesMa, filesNj, filesAa, filesMe, filesRd, filesSv, 
                  filesTg, filesWt, meanWt, devWt, filesTi, filesFs]
     sliderRes = [0.25, 5, 5, 5, 5, 5, 5, 
                  5, 5, 5, 5, 5, 5, 1/12, 
-                 5, 2, 2, 5, 2, 2, 2, 2, 
-                 2, 5, 2, 0.5, 2, 2]
+                 5, 1, 1, 5, 1, 1, 1, 1, 
+                 1, 1, 1, 0.5, 1, 1]
     sliderMin = [1, 5, 5, 5, 5, 5, 5, 
                  5, 5, 5, 5, 5, 5, 1/12, 
                  0, 0, 0, 0, 0, 0, 0, 0, 
@@ -487,8 +491,8 @@ def do_animation():
         )
 
     sim.AnimateButton(
-            x=xSlider+1125,
-            y=ySlider-100,
+            x=xSlider+1225,
+            y=ySlider-85,
             width=175,
             fontsize=20,
             fillcolor="20%gray",
@@ -503,6 +507,7 @@ Generates files for the queue by filetype if (and only if) the file type's inter
 greater than zero.  iat = 0 represents file types not being processed for the current simulation
 '''
 def dataFileGenerator():
+    global qCo, qDk, qMa, qNj, qRd, qSv, qTg, qWt, qAa, qTi, qMe, qFs
     low = 4; med = 3; hi = 2; vHi = 1
     lowP = 0.1; medP = 67.4; hiP = 30; vHiP = 2.5
     filePriority = sim.Pdf((low, med, hi, vHi), (lowP, medP, hiP, vHiP))
@@ -529,12 +534,14 @@ class dataFile(sim.Component):
         self.id = id
         self.fileRequest = fileRequest[i]
         self.serverTime = serverTime[i]
+        self.fileQueue = fileQueue[i]
 
     def animation_objects(self, id):
         return super().animation_objects(id)
 
     def process(self):
         self.enter(system)    
+        self.enter(self.fileQueue)
 
         # Hold process
         holdP = sim.Pdf(("Yes", "No"), (1.2, 98.8)).sample()
@@ -542,6 +549,7 @@ class dataFile(sim.Component):
             self.leave()
             self.hold(sim.Normal(95, 14.25).sample())
             self.enter(system)
+            self.enter(self.fileQueue)
         
         self.request(servers, self.fileRequest)     
         self.hold(sim.Exponential(self.serverTime).sample())
@@ -549,12 +557,25 @@ class dataFile(sim.Component):
         self.leave()
 
 def runSimulation():
-    global env, system, fileRequest, serverTime
+    global env, system, fileRequest, serverTime, fileQueue
     global servers, fileCo, fileDk, fileMa, fileNj, fileRd, fileSv
     global fileTg, fileWt, fileAa, fileTi, fileMe, fileFs
+    global sysCo, sysDk, sysMa, sysNj, sysRd, sysSv, sysTg, sysWt, sysAa, sysTi, sysMe, sysFs
 
     env = sim.Environment(time_unit = "days")
     system = sim.Queue(name = "system")
+    sysCo = sim.Queue(name = "sysCo")
+    sysDk = sim.Queue(name = "sysDk")
+    sysMa = sim.Queue(name = "sysMa")
+    sysNj = sim.Queue(name = "sysNj")
+    sysRd = sim.Queue(name = "sysRd")
+    sysSv = sim.Queue(name = "sysSv")
+    sysTg = sim.Queue(name = "sysTg")
+    sysWt = sim.Queue(name = "sysWt")
+    sysAa = sim.Queue(name = "sysAa")
+    sysTi = sim.Queue(name = "sysTi")
+    sysMe = sim.Queue(name = "sysMe")
+    sysFs = sim.Queue(name = "sysFs")
 
     servers = sim.Resource(name="servers", capacity=nservers)
     fileCo = sim.Resource(name = "fileCo", capacity = 999999)
@@ -574,6 +595,8 @@ def runSimulation():
 
     fileRequest = [fileCo, fileDk, fileMa, fileNj, fileRd, fileSv, fileTg, fileWt, fileAa, 
         fileTi, fileMe, fileFs]
+    
+    fileQueue = [sysCo, sysDk, sysMa, sysNj, sysRd, sysSv, sysTg, sysWt, sysAa, sysTi, sysMe, sysFs]
     
     serverTime = [coServerTime, dkServerTime, maServerTime, njServerTime, rdServerTime, svServerTime, tgServerTime,
                   wtServerTime, aaServerTime, tiServerTime, meServerTime, fsServerTime]
@@ -599,12 +622,13 @@ def runSimulation():
         systemHistPlot(sysLen, plotXlabel[i], "Number of Days", fileNamePrefix[i]+fileNameSuffix[j], monitorColor[i], simFileName); j=+1
         systemBoxPlot(sysLen, plotXlabel[i], fileNamePrefix[i]+fileNameSuffix[j], monitorColor[i], simFileName); j+=1
         systemStairPlot(sysLen, "Files Over Time", plotXlabel[i], fileNamePrefix[i]+fileNameSuffix[j], monitorColor[i], simFileName); j+=1
-
-    print(fileCo)
-
+        
+    # sysLen = []; sysLen = fileCo.requesters().length_of_stay.tx(); sysLen = [float(e) for e in sysLen[1]]
+    # systemBoxPlot(sysLen, "", "", "blue", "")
+      
     env.video_close()
 
-    create_analytics_report()
+    # getFileName(simFileName)
 
 if __name__ == "__main__":   
     # Declare parameter variables
