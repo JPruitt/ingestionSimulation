@@ -2,9 +2,12 @@ import salabim as sim
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+import os
+
+filePath = "./capDevDataIngestSim/plots/"
+#filePath = "./plots/"
 
 def systemScatterPlot(fileQueueX, fileQueueY, plotXlabel, plotYlabel, plotTitle, plotColor, simFileName):
-    filePath = "./capDevDataIngestSim/plots/"
     fig, ax = plt.subplots(facecolor = "gray")
     ax.set_facecolor("silver")
     ax.set_xlabel(plotXlabel, color = "whitesmoke")
@@ -12,11 +15,10 @@ def systemScatterPlot(fileQueueX, fileQueueY, plotXlabel, plotYlabel, plotTitle,
     ax.set_title(plotTitle, color = "snow")
     ax.scatter(fileQueueX, fileQueueY, color = plotColor)
     ax.tick_params(labelcolor = "white")
-    plt.savefig(filePath+simFileName+plotTitle+".png")
+    plt.savefig(filePath+"/"+simFileName+"_"+plotTitle+".png")
     plt.close()
 
 def systemHistPlot(fileQueue, plotXlabel, plotYlabel, plotTitle, plotColor, simFileName):
-    filePath = "./capDevDataIngestSim/plots/"
     fig, ax = plt.subplots(facecolor = "gray")
     ax.set_facecolor("silver")
     ax.set_xlabel(plotXlabel, color = "whitesmoke")
@@ -25,11 +27,10 @@ def systemHistPlot(fileQueue, plotXlabel, plotYlabel, plotTitle, plotColor, simF
     ax.hist(fileQueue, color = plotColor, density = True, histtype="stepfilled",
             align = "left")
     ax.tick_params(labelcolor = "white")
-    plt.savefig(filePath+simFileName+plotTitle+".png")
+    plt.savefig(filePath+"/"+simFileName+"_"+plotTitle+".png")
     plt.close()
 
 def systemBoxPlot(fileQueue, plotYlabel, plotTitle, plotColor, simFileName):
-    filePath = "./capDevDataIngestSim/plots/"
     fig, ax = plt.subplots(facecolor = "gray")
     ax.set_facecolor("silver")
     ax.set_xticks([0,1])
@@ -53,11 +54,10 @@ def systemBoxPlot(fileQueue, plotYlabel, plotTitle, plotColor, simFileName):
                 capprops={"color":plotColor}
                 )
     ax.tick_params(labelcolor = "white")
-    plt.savefig(filePath+simFileName+plotTitle+".png")
+    plt.savefig(filePath+"/"+simFileName+"_"+plotTitle+".png")
     plt.close()
 
 def systemStairPlot(fileQueue, plotXlabel, plotYlabel, plotTitle, plotColor, simFileName):
-    filePath = "./capDevDataIngestSim/plots/"
     fig, ax = plt.subplots(facecolor = "gray")
     ax.set_facecolor("silver")
     ax.set_xlabel(plotXlabel, color = "whitesmoke")
@@ -65,11 +65,10 @@ def systemStairPlot(fileQueue, plotXlabel, plotYlabel, plotTitle, plotColor, sim
     ax.set_title(plotTitle, color = "snow")
     ax.stairs(fileQueue, color = plotColor)
     ax.tick_params(labelcolor = "white")
-    plt.savefig(filePath+simFileName+plotTitle+".png")
+    plt.savefig(filePath+"/"+simFileName+"_"+plotTitle+".png")
     plt.close()
 
 def systemLinePlot(fileQueue, plotXlabel, plotYlabel, plotTitle, plotColor, simFileName):
-    filePath = "./capDevDataIngestSim/plots/"
     fig, ax = plt.subplots(facecolor = "gray")
     ax.set_facecolor("silver")
     ax.set_xlabel(plotXlabel, color = "whitesmoke")
@@ -77,11 +76,10 @@ def systemLinePlot(fileQueue, plotXlabel, plotYlabel, plotTitle, plotColor, simF
     ax.set_title(plotTitle, color = "snow")
     ax.plot(fileQueue, color = plotColor)
     ax.tick_params(labelcolor = "white")
-    plt.savefig(filePath+simFileName+plotTitle+".png")
+    plt.savefig(filePath+"/"+simFileName+"_"+plotTitle+".png")
     plt.close()
 
 def systemMultiLinePlot(fileQueue, plotXlabel, plotYlabel, plotTitle, plotColor,simFileName):
-    filePath = "./capDevDataIngestSim/plots/"
     fig, ax = plt.subplots(facecolor = "gray")
     ax.set_facecolor("silver")
     ax.set_xlabel(plotXlabel, color = "whitesmoke")
@@ -91,7 +89,7 @@ def systemMultiLinePlot(fileQueue, plotXlabel, plotYlabel, plotTitle, plotColor,
     for i in range (0,j):
         ax.plot(fileQueue[[i]], color = plotColor[i])
     ax.tick_params(labelcolor = "white")
-    plt.savefig(filePath+simFileName+plotTitle+".png")
+    plt.savefig(filePath+"/"+simFileName+"_"+plotTitle+".png")
     plt.close()
 
 

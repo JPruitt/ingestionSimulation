@@ -1,25 +1,26 @@
 #Global Packages
 import salabim as sim
-import tkinter as tk
-from tkinter import *
-import matplotlib.pyplot as plt
+import os
 
 # Local Modules
-from plottingModule import systemHistPlot, systemBoxPlot, systemStairPlot, systemMultiLinePlot
-from reportGeneratingModule import create_analytics_report
+from plottingModule import systemHistPlot, systemBoxPlot, systemStairPlot
+from pdfGeneratingModule import getFileName
+from helperFunctions import csvExport, formatFileData, formatStayData, createFileDataMaster, createStayDataMaster, createFilesStats
+from helperFunctions import createQueueStats, createStayStats
 
-def setParameterValues(parameterList):
-    global nservers, filesCo, iatCo, filesDk, iatDk
-    global filesMa, iatMa, filesNj, iatNj, filesRd, iatRd, filesSv, iatSv, filesTg, iatTg
-    global filesWt, iatWt, meanWt, devWt, nameAa, filesAa, iatAa, nameTi, filesTi, iatTi
-    global nameMe, filesMe, iatMe, nameFs, filesFs, iatFs
+# Get values from parameter input module
+
+
+def setParameterValues(paramDict):
+    global nservers, filesCo, iatCo, filesDk, iatDk, filesMa, iatMa, filesNj, iatNj, filesRd, iatRd, filesSv, iatSv, filesTg, iatTg
+    global filesWt, iatWt, meanWt, devWt, nameAa, filesAa, iatAa, nameTi, filesTi, iatTi, nameMe, filesMe, iatMe, nameFs, filesFs, iatFs
     global timeWindowYears, daysPerYear, timeWindow, simFileName
     global coServerTime, coMinutes, dkServerTime, dkMinutes, maServerTime, maMinutes, njServerTime, njMinutes, rdServerTime, rdMinutes, svServerTime, svMinutes
     global tgServerTime, tgMinutes, wtServerTime, wtMinutes, aaServerTime, aaMinutes, tiServerTime, tiMinutes, meServerTime, meMinutes, fsServerTime, fsMinutes
 
-    paramValues = parameterList
+    paramValues = paramDict
     i=0
-    
+
     simFileName = paramValues[i]; i+=1
     nservers = float(paramValues[i]); i+=1
     coMinutes = float(paramValues[i]); i+=1
@@ -78,26 +79,18 @@ def setParameterValues(parameterList):
     iatFs = float(paramValues[i]); i+=1
     timeWindowYears = float(paramValues[i]); i+=1
     daysPerYear = float(paramValues[i]); i+=1
-    timeWindow = float(paramValues[i]); i+=1
+    timeWindow = float(paramValues[i])
 
     runSimulation()
 
 def do_animation():
-    global nserversLast, filesCoLast, filesDkLast, filesMaLast, filesNjLast, filesRdLast
-    global coMinutesLast, dkMinutesLast, maMinutesLast, njMinutesLast, rdMinutesLast, svMinutesLast
-    global tgMinutesLast, wtMinutesLast, aaMinutesLast, tiMinutesLast, meMinutesLast, fsMinutesLast
-    global filesSvLast, filesTgLast, filesWtLast, meanWtLast, devWtLast, timeWindowYearsLast
-    global filesAaLast, filesTiLast, filesMeLast, filesFsLast
-
-    xSlider = 50
-    ySlider = -47.5
-
     simHeight = 1150
     simWidth = 1500
     xMonitor = 50
     yMonitor = 900
     
     videoFilePath = "./capDevDataIngestSim/video/"
+    # videoFilePath = "./video/"
 
     # set global animation parameters    
     env.animation_parameters(
@@ -106,11 +99,9 @@ def do_animation():
         background_color="30%gray",
         height = simHeight,
         width = simWidth, 
-        modelname = "CapDev Data Ingestion Process Model",
-        title = "CapDev Data Ingestion Process Model", 
+        title = "CapDev Data Ingestion Process Model",
         video = videoFilePath + simFileName + "capDevSim.avi"
-    )
-    
+    )   
 
     '''
     animate file queue and data processor activity; file queue populates to the left from the 
@@ -123,38 +114,37 @@ def do_animation():
     sim.AnimateText(text="<-- Waiting Data Files", fontsize = 10, x=850, y=25, text_anchor="n")
 
     # Queue  animation
-    env.animate_debug(True)
     sim.AnimateQueue(servers.requesters(), x=1350, y=75, title="", direction="w")
     sim.AnimateQueue(servers.claimers(), x=1450, y=75, direction="n", title="")
-    
 
     def animateMonitor(j):
-
         global monitorType, monitorColor
-        # creates 14 animated monitors from lists of monitor parameter values
+        # creates 14 animated monitors from lists of monitor attribute values
 
-        monitorType = [system.length_of_stay, servers.requesters().length, fileCo.requesters().length, 
-            fileDk.requesters().length, fileMa.requesters().length, fileNj.requesters().length, fileAa.requesters().length,
-            fileMe.requesters().length, fileRd.requesters().length, fileSv.requesters().length, fileTg.requesters().length,
-            fileWt.requesters().length, fileTi.requesters().length, fileFs.requesters().length]
+        monitorType = [system.length_of_stay, system.length, sysCo.length,
+            sysDk.length, sysMa.length, sysNj.length, sysAa.length,
+            sysMe.length, sysRd.length, sysSv.length, sysTg.length,
+            sysWt.length, sysTi.length, sysFs.length]
         
         xOffset = [0, 0, 0, 0, 0, 0, 0, 0, 675, 675, 675, 675, 675, 675]
         
-        yOffset = [-50, -150, -250, -350, -450, -550, -650, -750, -250, -350, -450, -550, -650, -750]
+        yOffset = [-25, -125, -250, -350, -450, -550, -650, -750, -250, -350, -450, -550, -650, -750]
         
         wOffset = [-200, -200, -875, -875, -875, -875, -875, -875, -875, -875, -875, -875, 
             -875, -875]
         
+        vScale = [10, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5]
+        
         monitorColor = ["white", "white", "red", "yellow", "blue", "orange", "tomato", "goldenrod",
             "green", "purple", "peru", "teal", "yellowgreen", "violet"]
 
-        monitorTitle = ["Time in data file queue.  Mean ={:10.2f}", "Number of data files in the queue.  Mean ={:10.2f}", 
-            "Number of Corian (CO) files in the queue. Mean ={:10.2f}", "Number of Duke (DK) files in the queue. Mean ={:10.2f}", 
-            "Number of L-Madis (MA) files in the queue. Mean ={:10.2f}", "Number of Ninja (NJ) files in the queue. Mean ={:10.2f}",
-            "Number of Aerial Armor files in the queue. Mean ={:10.2f}", "Number of Medusa files in the queue. Mean ={:10.2f}",
-            "Number of RD-SUADS (RD) files in the queue. Mean ={:10.2f}", "Number of Skyview (SV) files in the queue. Mean ={:10.2f}",
-            "Number of TGS (TG) files in the queue. Mean ={:10.2f}", "Number of Windtalker (WT) files in the queue. Mean ={:10.2f}",
-            "Number of Titan files in the queue. Mean ={:10.2f}", "Number of FS/MLIDS files in the queue. Mean ={:10.2f}"]
+        monitorTitle = ["Time in data file queue.  Mean ={:10.2f}   Days", "Number of data files in the queue.  Mean ={:10.2f}   Files", 
+            "Number of Corian (CO) files in the queue. Mean ={:10.2f}   Files", "Number of Drake (DK) files in the queue. Mean ={:10.2f}   Files", 
+            "Number of L-Madis (MA) files in the queue. Mean ={:10.2f}   Files", "Number of Ninja (NJ) files in the queue. Mean ={:10.2f}   Files",
+            "Number of Aerial Armor files in the queue. Mean ={:10.2f}   Files", "Number of Medusa files in the queue. Mean ={:10.2f}   Files",
+            "Number of RD-SUADS (RD) files in the queue. Mean ={:10.2f}   Files", "Number of Skyview (SV) files in the queue. Mean ={:10.2f}   Files",
+            "Number of TGS (TG) files in the queue. Mean ={:10.2f}   Files", "Number of Windtalker (WT) files in the queue. Mean ={:10.2f}   Files",
+            "Number of Titan files in the queue. Mean ={:10.2f}   Files", "Number of FS/MLIDS files in the queue. Mean ={:10.2f}   Files"]
       
         sim.AnimateMonitor(
             monitorType[j],
@@ -165,6 +155,7 @@ def do_animation():
             width=env.width() + wOffset[j],
             linecolor=monitorColor[j],
             horizontal_scale=10,
+            vertical_scale=vScale[j],
             title=lambda: monitorTitle[j].format(monitorType[j].mean()),
         )
 
@@ -173,6 +164,13 @@ def do_animation():
 
     for i in range (0,14):
         animateMonitor(i)
+
+    global nserversLast, filesCoLast, coMinutesLast, filesDkLast, dkMinutesLast, filesMaLast, maMinutesLast, filesNjLast, njMinutesLast, filesRdLast, rdMinutesLast
+    global filesSvLast, svMinutesLast, filesTgLast, tgMinutesLast, filesWtLast, wtMinutesLast, devWtLast, meanWtLast, filesAaLast, aaMinutesLast
+    global filesMeLast, meMinutesLast, filesTiLast, tiMinutesLast, filesFsLast, fsMinutesLast, timeWindowYearsLast
+
+    xSlider = 50
+    ySlider = -47.5
 
     def setFilesAa(val):
         global filesAaLast
@@ -407,35 +405,42 @@ def do_animation():
             fsServerTime = (1/((1/fsMinutes)*(60/1)*(8/1)))*nservers
 
 
-# Sliders to display and/or change parameter values during the simulation
+    # Slider attribute values
     sliderLabels = ["Proc. FTE", "CO Minutes", "DK Minutes", "MA Minutes", "NJ Minutes", "AA Minutes", "ME Minutes", 
                     "RD Minutes", "SV Minutes", "TG Minutes", "WT Minutes", "TI Minutes", "FS Minutes", "Sim Years", 
                     "CO Files", "DK Files", "MA Files", "NJ Files", "AA Files", "ME Files", "RD Files", "SV Files", 
                     "TG Files", "WT Files", "WT Avg", "WT Dev", "TI Files", "FS Files"]
+    
     sliderXvalue = [0, 100, 170, 240, 310, 380, 450,
-                    520, 590, 660, 730, 870, 940, 1225,
+                    520, 590, 660, 755, 920, 990, 1225,
                     100, 170, 240, 310, 380, 450, 520, 590, 
-                    660, 730, 800, 800, 870, 940]
-    sliderYvalue = [-25, -25, -25, -25, -25, -25, -25, 
-                    -25, -25, -25, -25, -25, -25, -25, 
-                    -85, -85, -85, -85, -85, -85, -85, -85, 
-                    -85, -85, -25, -85, -85, -85]
+                    660, 755, 825, 825, 920, 990]
+    
+    sliderYvalue = [25, 25, 25, 25, 25, 25, 25, 
+                    25, 25, 25, 25, 25, 25, 25, 
+                    -35, -35, -35, -35, -35, -35, -35, -35, 
+                    -35, -35, 25, -35, -35, -35]
+    
     sliderVar = [nservers, coMinutes, dkMinutes, maMinutes, njMinutes, aaMinutes, meMinutes, 
-                 rdMinutes, svMinutes, tgMinutes, wtMinutes, tiMinutes, fsMinutes, timeWindowYears, 
-                 filesCo, filesDk, filesMa, filesNj, filesAa, filesMe, filesRd, filesSv, 
-                 filesTg, filesWt, meanWt, devWt, filesTi, filesFs]
+                rdMinutes, svMinutes, tgMinutes, wtMinutes, tiMinutes, fsMinutes, timeWindowYears, 
+                filesCo, filesDk, filesMa, filesNj, filesAa, filesMe, filesRd, filesSv, 
+                filesTg, filesWt, meanWt, devWt, filesTi, filesFs]
+            
     sliderRes = [0.25, 5, 5, 5, 5, 5, 5, 
-                 5, 5, 5, 5, 5, 5, 1/12, 
-                 5, 2, 2, 5, 2, 2, 2, 2, 
-                 2, 5, 2, 0.5, 2, 2]
+                5, 5, 5, 5, 5, 5, 1/12, 
+                1, 1, 1, 1, 1, 1, 1, 1, 
+                1, 1, 1, 0.25, 1, 1]
+    
     sliderMin = [1, 5, 5, 5, 5, 5, 5, 
-                 5, 5, 5, 5, 5, 5, 1/12, 
-                 0, 0, 0, 0, 0, 0, 0, 0, 
-                 0, 0, 0, 0, 0, 0]
+                5, 5, 5, 5, 5, 5, 1/12, 
+                0, 0, 0, 0, 0, 0, 0, 0, 
+                0, 0, 0, 0, 0, 0]
+    
     sliderMax = [8, 900, 900, 900, 900, 900, 900, 
-                 900, 900, 900, 900, 900, 900, 5, 
-                 300, 200, 200, 200, 200, 200, 200, 200, 
-                 200, 300, 200, 100, 200, 200]
+                900, 900, 900, 900, 900, 900, 10, 
+                300, 300, 300, 300, 300, 300, 300, 300, 
+                200, 300, 300, 300, 300, 300]
+    
     sliderAction = [setNservers, setCoServerTime, setDkServerTime, setMaServerTime, setNjServerTime, setAaServerTime, setMeServerTime, 
                     setRdServerTime, setSvServerTime, setTgServerTime, setWtServerTime, setTiServerTime, setFsServerTime, setTimeWindowYears, 
                     setFilesCo, setFilesDk, setFilesMa, setFilesNj, setFilesAa, setFilesMe, setFilesRd, setFilesSv, 
@@ -443,33 +448,34 @@ def do_animation():
 
     nserversLast = nservers
     coMinutesLast = coMinutes
-    dkMinutesLast = dkMinutes
-    maMinutesLast = maMinutes
-    njMinutesLast = njMinutes
-    rdMinutesLast = rdMinutes
-    svMinutesLast = svMinutes
-    tgMinutesLast = tgMinutes
-    wtMinutesLast = wtMinutes
-    aaMinutesLast = aaMinutes
-    tiMinutesLast = tiMinutes
-    meMinutesLast = meMinutes
-    fsMinutesLast = fsMinutes
-    timeWindowYearsLast = timeWindowYears
     filesCoLast = filesCo
+    dkMinutesLast = dkMinutes
     filesDkLast = filesDk
+    maMinutesLast = maMinutes
     filesMaLast = filesMa
+    njMinutesLast = njMinutes
     filesNjLast = filesNj
+    aaMinutesLast = aaMinutes
+    filesAaLast = filesAa
+    meMinutesLast = meMinutes
+    filesMeLast = filesMe
+    rdMinutesLast = rdMinutes
     filesRdLast = filesRd
+    svMinutesLast = svMinutes
     filesSvLast = filesSv
+    tgMinutesLast = tgMinutes
     filesTgLast = filesTg
+    wtMinutesLast = wtMinutes
     filesWtLast = filesWt
+    tiMinutesLast = tiMinutes
+    filesTiLast = filesTi
+    fsMinutesLast = fsMinutes
+    filesFsLast = filesFs
+    timeWindowYearsLast = timeWindowYears
     meanWtLast = meanWt
     devWtLast = devWt
-    filesAaLast = filesAa
-    filesFsLast = filesFs
-    filesMeLast = filesMe
-    filesTiLast = filesTi
 
+    # Sliders to display and/or change parameter values during the simulation
     for i in range (0, 28):
         sim.AnimateSlider(
             x=xSlider+sliderXvalue[i],
@@ -486,9 +492,10 @@ def do_animation():
             xy_anchor="nw"
         )
 
+    # Button to restart simulation if parameter values are changed
     sim.AnimateButton(
-            x=xSlider+1125,
-            y=ySlider-100,
+            x=xSlider+1225,
+            y=ySlider-85,
             width=175,
             fontsize=20,
             fillcolor="20%gray",
@@ -503,6 +510,7 @@ Generates files for the queue by filetype if (and only if) the file type's inter
 greater than zero.  iat = 0 represents file types not being processed for the current simulation
 '''
 def dataFileGenerator():
+    global qCo, qDk, qMa, qNj, qRd, qSv, qTg, qWt, qAa, qTi, qMe, qFs
     low = 4; med = 3; hi = 2; vHi = 1
     lowP = 0.1; medP = 67.4; hiP = 30; vHiP = 2.5
     filePriority = sim.Pdf((low, med, hi, vHi), (lowP, medP, hiP, vHiP))
@@ -515,7 +523,7 @@ def dataFileGenerator():
     if iatSv != 0: qSv = sim.ComponentGenerator(dataFile, i = 5, id = "purple", name="SV,", iat = sim.Exponential(iatSv).sample); qSv.priority = filePriority
     if iatTg != 0: qTg = sim.ComponentGenerator(dataFile, i = 6, id = "peru", name="TG,", iat = sim.Exponential(iatTg).sample); qTg.priority = filePriority
     if iatWt != 0: 
-        # for loopp to add WT batch arrival behavior
+        #for loop to add WT batch arrival behavior
         for i in range (1, int(sim.Normal(meanWt, devWt).bounded_sample(lowerbound=0))): 
             qWt = sim.ComponentGenerator(dataFile, i = 7, id = "teal", name="WT,", iat = sim.IntUniform(5, 5).sample); qWt.priority = filePriority 
     if iatAa != 0: qAa = sim.ComponentGenerator(dataFile, i = 8, id = "tomato", name="AA,", iat = sim.Exponential(iatAa).sample); qAa.priority = filePriority
@@ -526,15 +534,15 @@ def dataFileGenerator():
 
 class dataFile(sim.Component): 
     def setup(self, i, id):
+        self.i=i
         self.id = id
         self.fileRequest = fileRequest[i]
         self.serverTime = serverTime[i]
-
-    def animation_objects(self, id):
-        return super().animation_objects(id)
-
+        self.fileQueue = fileQueue[i]
+   
     def process(self):
         self.enter(system)    
+        self.enter(self.fileQueue)
 
         # Hold process
         holdP = sim.Pdf(("Yes", "No"), (1.2, 98.8)).sample()
@@ -542,6 +550,7 @@ class dataFile(sim.Component):
             self.leave()
             self.hold(sim.Normal(95, 14.25).sample())
             self.enter(system)
+            self.enter(self.fileQueue)
         
         self.request(servers, self.fileRequest)     
         self.hold(sim.Exponential(self.serverTime).sample())
@@ -549,12 +558,25 @@ class dataFile(sim.Component):
         self.leave()
 
 def runSimulation():
-    global env, system, fileRequest, serverTime
+    global env, system, fileRequest, serverTime, fileQueue
     global servers, fileCo, fileDk, fileMa, fileNj, fileRd, fileSv
     global fileTg, fileWt, fileAa, fileTi, fileMe, fileFs
+    global sysCo, sysDk, sysMa, sysNj, sysRd, sysSv, sysTg, sysWt, sysAa, sysTi, sysMe, sysFs
 
     env = sim.Environment(time_unit = "days")
     system = sim.Queue(name = "system")
+    sysCo = sim.Queue(name = "sysCo")
+    sysDk = sim.Queue(name = "sysDk")
+    sysMa = sim.Queue(name = "sysMa")
+    sysNj = sim.Queue(name = "sysNj")
+    sysRd = sim.Queue(name = "sysRd")
+    sysSv = sim.Queue(name = "sysSv")
+    sysTg = sim.Queue(name = "sysTg")
+    sysWt = sim.Queue(name = "sysWt")
+    sysAa = sim.Queue(name = "sysAa")
+    sysTi = sim.Queue(name = "sysTi")
+    sysMe = sim.Queue(name = "sysMe")
+    sysFs = sim.Queue(name = "sysFs")
 
     servers = sim.Resource(name="servers", capacity=nservers)
     fileCo = sim.Resource(name = "fileCo", capacity = 999999)
@@ -575,6 +597,8 @@ def runSimulation():
     fileRequest = [fileCo, fileDk, fileMa, fileNj, fileRd, fileSv, fileTg, fileWt, fileAa, 
         fileTi, fileMe, fileFs]
     
+    fileQueue = [sysCo, sysDk, sysMa, sysNj, sysRd, sysSv, sysTg, sysWt, sysAa, sysTi, sysMe, sysFs]
+    
     serverTime = [coServerTime, dkServerTime, maServerTime, njServerTime, rdServerTime, svServerTime, tgServerTime,
                   wtServerTime, aaServerTime, tiServerTime, meServerTime, fsServerTime]
 
@@ -582,6 +606,7 @@ def runSimulation():
 
     env.run(till=timeWindow)
 
+    # Generate data plots
     plotXlabel = ["Length of Time in the Queue (Days)", "Queue Length", "CO-Queue Length", "DK-Queue Length",
         "MA-Queue Length", "NJ-Queue Length", "AA-Queue Length", "ME-Queue Length", "RD-Queue Length",
         "SV-Queue Length", "TG-Queue Length", "WT-Queue Length", "TI-Queue Length", "FS-Queue Length"]
@@ -600,11 +625,92 @@ def runSimulation():
         systemBoxPlot(sysLen, plotXlabel[i], fileNamePrefix[i]+fileNameSuffix[j], monitorColor[i], simFileName); j+=1
         systemStairPlot(sysLen, "Files Over Time", plotXlabel[i], fileNamePrefix[i]+fileNameSuffix[j], monitorColor[i], simFileName); j+=1
 
-    print(fileCo)
+    # Generate data files (.csv)
+    fileList = ["SYS_Files", "CO_Files", "DK_Files", "MA_Files", "NJ_Files", "AA_Files", "ME_Files", "RD_Files",
+                "SV_Files", "TG_Files", "WT_Files", "TI_Files", "FS_Files"]
+    
+    stayList = ["SYS_Stay", "CO_Stay", "DK_Stay", "MA_Stay", "NJ_Stay", "AA_Stay", "ME_Stay", "RD_Stay", 
+                "SV_Stay", "TG_Stay", "WT_Stay", "TI_Stay", "FS_Stay"]
+
+    fileMonitorList = [system.length, sysCo.length, sysDk.length, sysMa.length, sysNj.length, sysAa.length, sysMe.length, sysRd.length, 
+                       sysSv.length, sysTg.length, sysWt.length, sysTi.length, sysFs.length]
+    
+    stayMonitorList = [system.length_of_stay, sysCo.length_of_stay, sysDk.length_of_stay, sysMa.length_of_stay, 
+                       sysNj.length_of_stay, sysAa.length_of_stay, sysMe.length_of_stay, sysRd.length_of_stay, sysSv.length_of_stay, 
+                       sysTg.length_of_stay, sysWt.length_of_stay, sysTi.length_of_stay, sysFs.length_of_stay]
+
+    for i in range(0, len(fileList)):
+        sysLen = fileMonitorList[i].tx()
+        csvExport(fileList[i], sysLen)
+        formatFileData(fileList[i]+".csv")
+
+    for i in range(0, len(stayList)):
+        sysLen = stayMonitorList[i].tx()
+        csvExport(stayList[i], sysLen)
+        formatStayData(stayList[i]+".csv")
+
+    createFileDataMaster(fileList)
+    createStayDataMaster(stayList)
 
     env.video_close()
 
-    create_analytics_report()
+    # Generate report tables
+    iatValues = [iatAa, iatCo, iatDk, iatFs, iatMa, iatMe, iatNj, iatRd, iatSv, iatTg, iatTi, iatWt]
+
+    queueStats = []
+    sysFile = createFilesStats("SYS_Stay", timeWindow, "white"); queueStats.append(sysFile)
+    sysQueue = createQueueStats("SYS_Files"); queueStats.append(sysQueue)
+    sysStay = createStayStats("SYS_Stay"); queueStats.append(sysStay)
+
+    aaFile = createFilesStats("AA_Stay", timeWindow, "tomato"); queueStats.append(aaFile)
+    aaQueue = createQueueStats("AA_Files"); queueStats.append(aaQueue)
+    aaStay = createStayStats("AA_Stay"); queueStats.append(aaStay)
+
+    coFile = createFilesStats("CO_Stay", timeWindow, "red"); queueStats.append(coFile)
+    coQueue = createQueueStats("CO_Files"); queueStats.append(coQueue)
+    coStay = createStayStats("CO_Stay"); queueStats.append(coStay)
+
+    dkFile = createFilesStats("DK_Stay", timeWindow, "yellow"); queueStats.append(dkFile)
+    dkQueue = createQueueStats("DK_Files"); queueStats.append(dkQueue)
+    dkStay = createStayStats("DK_Stay"); queueStats.append(dkStay)
+
+    fsFile = createFilesStats("FS_Stay", timeWindow, "violet"); queueStats.append(fsFile)
+    fsQueue = createQueueStats("FS_Files"); queueStats.append(fsQueue)
+    fsStay = createStayStats("FS_Stay"); queueStats.append(fsStay)
+
+    maFile = createFilesStats("MA_Stay", timeWindow, "blue"); queueStats.append(maFile)
+    maQueue = createQueueStats("MA_Files"); queueStats.append(maQueue)
+    maStay = createStayStats("MA_Stay"); queueStats.append(maStay)
+    
+    meFile = createFilesStats("ME_Stay", timeWindow, "goldenrod"); queueStats.append(meFile)
+    meQueue = createQueueStats("ME_Files"); queueStats.append(meQueue)
+    meStay = createStayStats("ME_Stay"); queueStats.append(meStay)
+
+    njFile = createFilesStats("NJ_Stay", timeWindow, "orange"); queueStats.append(njFile)
+    njQueue = createQueueStats("NJ_Files"); queueStats.append(njQueue)
+    njStay = createStayStats("NJ_Stay"); queueStats.append(njStay)
+
+    rdFile = createFilesStats("RD_Stay", timeWindow, "green"); queueStats.append(rdFile)
+    rdQueue = createQueueStats("RD_Files"); queueStats.append(rdQueue)
+    rdStay = createStayStats("RD_Stay"); queueStats.append(rdStay)
+
+    svFile = createFilesStats("SV_Stay", timeWindow, "purple"); queueStats.append(svFile)
+    svQueue = createQueueStats("SV_Files"); queueStats.append(svQueue)
+    svStay = createStayStats("SV_Stay"); queueStats.append(svStay)
+
+    tgFile = createFilesStats("TG_Stay", timeWindow, "peru"); queueStats.append(tgFile)
+    tgQueue = createQueueStats("TG_Files"); queueStats.append(tgQueue)
+    tgStay = createStayStats("TG_Stay"); queueStats.append(tgStay)
+
+    tiFile = createFilesStats("TI_Stay", timeWindow, "yellowgreen"); queueStats.append(tiFile)
+    tiQueue = createQueueStats("TI_Files"); queueStats.append(tiQueue)
+    tiStay = createStayStats("TI_Stay"); queueStats.append(tiStay)
+
+    wtFile = createFilesStats("WT_Stay", timeWindow, "teal"); queueStats.append(wtFile)
+    wtQueue = createQueueStats("WT_Files"); queueStats.append(wtQueue)
+    wtStay = createStayStats("WT_Stay"); queueStats.append(wtStay)
+
+    getFileName(simFileName, iatValues, queueStats)
 
 if __name__ == "__main__":   
     # Declare parameter variables
@@ -613,25 +719,25 @@ if __name__ == "__main__":
     daysPerYear = daysPerYear - 12 # Federal Holidays
     timeWindow = daysPerYear
     timeWindowYears = 1
-    timeWindow = 50
+    timeWindow = 22
 
     simFileName = "testFile"
-    nservers = 2
+    nservers = 3
     coMinutes = 60
     coServerTime = (1/((1/coMinutes)*(60/1)*(8/1)))*nservers
-    filesCo = 12
+    filesCo = 14
     iatCo = 1/((filesCo*12)/daysPerYear)
     dkMinutes = 540
     dkServerTime = (1/((1/dkMinutes)*(60/1)*(8/1)))*nservers
-    filesDk = 1
+    filesDk = 3
     iatDk = 1/((filesDk*12)/daysPerYear)
-    maMinutes = 45
+    maMinutes = 60
     maServerTime = (1/((1/maMinutes)*(60/1)*(8/1)))*nservers
     filesMa = 1
     iatMa = 1/((filesMa*12)/daysPerYear)
-    njMinutes = 30
+    njMinutes = 60
     njServerTime = (1/((1/njMinutes)*(60/1)*(8/1)))*nservers
-    filesNj = 76
+    filesNj = 101
     iatNj = 1/((filesNj*12)/daysPerYear)
     rdMinutes = 60
     rdServerTime = (1/((1/rdMinutes)*(60/1)*(8/1)))*nservers
@@ -639,15 +745,15 @@ if __name__ == "__main__":
     iatRd = 1/((filesRd*12)/daysPerYear)
     svMinutes = 30
     svServerTime = (1/((1/svMinutes)*(60/1)*(8/1)))*nservers
-    filesSv = 4
+    filesSv = 2
     iatSv = 1/((filesSv*12)/daysPerYear)
-    tgMinutes = 60
+    tgMinutes = 30
     tgServerTime = (1/((1/tgMinutes)*(60/1)*(8/1)))*nservers
     filesTg = 1
     iatTg = 1/((filesTg*12)/daysPerYear)
     wtMinutes = 10
     wtServerTime = (1/((1/wtMinutes)*(60/1)*(8/1)))*nservers
-    filesWt = 129
+    filesWt = 130
     iatWt = 1/((filesWt*12)/daysPerYear)
     meanWt = 30
     devWt = 20.1

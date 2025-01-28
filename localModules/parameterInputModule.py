@@ -172,7 +172,7 @@ def enterStartingConditions():
     #Personnel available for data ingestion
     nserversEntry = StringVar()
     nserversEntry = ttk.Entry(mainframe, width=7, textvariable=nserversEntry)
-    nserversEntry.insert(0, "2")
+    nserversEntry.insert(0, "3")
     nserversEntry.grid(row=i, column=2, sticky=(W, E))
     ttk.Label(mainframe, text="Number of FTE used to ingest data.").grid(row=i, column=3, sticky=W, padx=5, pady=5)
 
@@ -190,7 +190,7 @@ def enterStartingConditions():
     # MAX files processed per month is used to estimate service time
     iatCoEntry = StringVar()
     iatCoEntry = ttk.Entry(mainframe, width=7, textvariable=iatCoEntry)
-    iatCoEntry.insert(0, "11")
+    iatCoEntry.insert(0, "14")
     iatCoEntry.grid(row=i, column=2, sticky=(W,E))
     ttk.Label(mainframe, text="Average number Corian files per month.").grid(row=i, column=3, sticky=W, padx=5, pady=5)
     coTimeEntry = StringVar()
@@ -201,7 +201,7 @@ def enterStartingConditions():
 
     iatDkEntry = StringVar()
     iatDkEntry = ttk.Entry(mainframe, width=7, textvariable=iatDkEntry)
-    iatDkEntry.insert(0, "1")
+    iatDkEntry.insert(0, "3")
     iatDkEntry.grid(row=i, column=2, sticky=(W,E))
     ttk.Label(mainframe, text="Average Drake files per month.").grid(row=i, column=3, sticky=W, padx=5, pady=5)
     dkTimeEntry = StringVar()
@@ -218,18 +218,18 @@ def enterStartingConditions():
     ttk.Label(mainframe, text="Average L-Madis files per month.").grid(row=i, column=3, sticky=W, padx=5, pady=5)
     maTimeEntry = StringVar()
     maTimeEntry = ttk.Entry(mainframe, width=7, textvariable=maTimeEntry)
-    maTimeEntry.insert(0, "45")
+    maTimeEntry.insert(0, "60")
     maTimeEntry.grid(row=i, column=4, sticky=(W, E))
     ttk.Label(mainframe, text="Average L-Madis processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
 
     iatNjEntry = StringVar()
     iatNjEntry = ttk.Entry(mainframe, width=7, textvariable=iatNjEntry)
-    iatNjEntry.insert(0, "76")
+    iatNjEntry.insert(0, "101")
     iatNjEntry.grid(row=i, column=2, sticky=(W,E))
     ttk.Label(mainframe, text="Average Ninja files per month.").grid(row=i, column=3, sticky=W, padx=5, pady=5)
     njTimeEntry = StringVar()
     njTimeEntry = ttk.Entry(mainframe, width=7, textvariable=njTimeEntry)
-    njTimeEntry.insert(0, "30")
+    njTimeEntry.insert(0, "60")
     njTimeEntry.grid(row=i, column=4, sticky=(W, E))
     ttk.Label(mainframe, text="Average Ninja processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
 
@@ -246,7 +246,7 @@ def enterStartingConditions():
 
     iatSvEntry = StringVar()
     iatSvEntry = ttk.Entry(mainframe, width=7, textvariable=iatSvEntry)
-    iatSvEntry.insert(0, "4")
+    iatSvEntry.insert(0, "2")
     iatSvEntry.grid(row=i, column=2, sticky=(W,E))
     ttk.Label(mainframe, text="Average Skyview files per month.").grid(row=i, column=3, sticky=W, padx=5, pady=5)
     svTimeEntry = StringVar()
@@ -262,13 +262,13 @@ def enterStartingConditions():
     ttk.Label(mainframe, text="Average TGS files per month.").grid(row=i, column=3, sticky=W, padx=5, pady=5)
     tgTimeEntry = StringVar()
     tgTimeEntry = ttk.Entry(mainframe, width=7, textvariable=tgTimeEntry)
-    tgTimeEntry.insert(0, "60")
+    tgTimeEntry.insert(0, "30")
     tgTimeEntry.grid(row=i, column=4, sticky=(W, E))
     ttk.Label(mainframe, text="Average TGS processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
 
     iatWtEntry = StringVar()
     iatWtEntry = ttk.Entry(mainframe, width=7, textvariable=iatWtEntry)
-    iatWtEntry.insert(0, "129")
+    iatWtEntry.insert(0, "130")
     iatWtEntry.grid(row=i, column=2, sticky=(W,E))
     ttk.Label(mainframe, text="Average Windtalker files per month.").grid(row=i, column=3, sticky=W, padx=5, pady=5)
     wtTimeEntry = StringVar()
@@ -280,12 +280,12 @@ def enterStartingConditions():
     # Collect windtalker weekly batch size parameters (all windtalker files arrive o/a Mondays)
     meanWtEntry = StringVar()
     meanWtEntry = ttk.Entry(mainframe, width=7, textvariable=meanWtEntry)
-    meanWtEntry.insert(0, "30")
+    meanWtEntry.insert(0, "27.33")
     meanWtEntry.grid(row=i, column=2, sticky=(W,E))
     ttk.Label(mainframe, text="Average weekly Windtalker batch size.").grid(row=i, column=3, sticky=W, padx=5, pady=5)
     devWtEntry = StringVar()
     devWtEntry = ttk.Entry(mainframe, width=7, textvariable=devWtEntry)
-    devWtEntry.insert(0, "20.1")
+    devWtEntry.insert(0, "6.74")
     devWtEntry.grid(row=i, column=4, sticky=(W,E))
     ttk.Label(mainframe, text="Standard deviation of weekly Windtalker batch size.").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
     
@@ -374,4 +374,3 @@ def enterStartingConditions():
 
 if __name__ == "__main__":
     getParamValues()
-    print(paramDict)
