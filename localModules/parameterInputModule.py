@@ -28,11 +28,7 @@ def parameterEntry(*args):
     '''
     try:
         #Variables with values set in this modulae that are required elsewhere
-        global nservers, iatCo, iatDk, iatMa, iatNj, iatRd, iatSv, iatTg, iatWt, meanWt
-        global timeWindowYears, devWt, timeWindow, iatAa, iatTi, nameAa, nameTi, nameMe, nameFs
-        global iatMe, iatFs, paramDict, simFileName
-        global coServerTime, coMinutes, dkServerTime, dkMinutes, maServerTime, maMinutes, njServerTime, njMinutes, rdServerTime, rdMinutes, svServerTime, svMinutes
-        global tgServerTime, tgMinutes, wtServerTime, wtMinutes, aaServerTime, aaMinutes, tiServerTime, tiMinutes, meServerTime, meMinutes, fsServerTime, fsMinutes
+        global paramDict
 
         #Initailize list to pass variable values
         paramDict = []
@@ -40,35 +36,35 @@ def parameterEntry(*args):
         simFileName = simFileNameEntry.get(); paramDict.append(simFileName)
         nservers = float(nserversEntry.get()); paramDict.append(nservers)
         coMinutes = float(coTimeEntry.get()); paramDict.append(coMinutes)
-        coServerTime = (1/((1/coMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(coServerTime)
+        coServerTime = (1/((1/coMinutes)*(60/1)*(8/1))); paramDict.append(coServerTime)
         filesCo = float(iatCoEntry.get()); paramDict.append(filesCo)
         iatCo = 1/((filesCo*12)/daysPerYear); paramDict.append(iatCo)
         dkMinutes = float(dkTimeEntry.get()); paramDict.append(dkMinutes)
-        dkServerTime = (1/((1/dkMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(dkServerTime)
+        dkServerTime = (1/((1/dkMinutes)*(60/1)*(8/1))); paramDict.append(dkServerTime)
         filesDk = float(iatDkEntry.get()); paramDict.append(filesDk)
         iatDk = 1/((filesDk*12)/daysPerYear); paramDict.append(iatDk)
         maMinutes = float(maTimeEntry.get()); paramDict.append(maMinutes)
-        maServerTime = (1/((1/maMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(maServerTime)
+        maServerTime = (1/((1/maMinutes)*(60/1)*(8/1))); paramDict.append(maServerTime)
         filesMa = float(iatMaEntry.get()); paramDict.append(filesMa)
         iatMa = 1/((filesMa*12)/daysPerYear); paramDict.append(iatMa)
         njMinutes = float(njTimeEntry.get()); paramDict.append(njMinutes)
-        njServerTime = (1/((1/njMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(njServerTime)
+        njServerTime = (1/((1/njMinutes)*(60/1)*(8/1))); paramDict.append(njServerTime)
         filesNj = float(iatNjEntry.get()); paramDict.append(filesNj)
         iatNj = 1/((filesNj*12)/daysPerYear); paramDict.append(iatNj)
         rdMinutes = float(rdTimeEntry.get()); paramDict.append(rdMinutes)
-        rdServerTime = (1/((1/rdMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(rdServerTime)
+        rdServerTime = (1/((1/rdMinutes)*(60/1)*(8/1))); paramDict.append(rdServerTime)
         filesRd = float(iatRdEntry.get()); paramDict.append(filesRd)
         iatRd = 1/((filesRd*12)/daysPerYear); paramDict.append(iatRd)
         svMinutes = float(svTimeEntry.get()); paramDict.append(svMinutes)
-        svServerTime = (1/((1/svMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(svServerTime)
+        svServerTime = (1/((1/svMinutes)*(60/1)*(8/1))); paramDict.append(svServerTime)
         filesSv = float(iatSvEntry.get()); paramDict.append(filesSv)
         iatSv = 1/((filesSv*12)/daysPerYear); paramDict.append(iatSv)
         tgMinutes = float(tgTimeEntry.get()); paramDict.append(tgMinutes)
-        tgServerTime = (1/((1/tgMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(tgServerTime)
+        tgServerTime = (1/((1/tgMinutes)*(60/1)*(8/1))); paramDict.append(tgServerTime)
         filesTg = float(iatTgEntry.get()); paramDict.append(filesTg)
         iatTg = 1/((filesTg*12)/daysPerYear); paramDict.append(iatTg)
         wtMinutes = float(wtTimeEntry.get()); paramDict.append(wtMinutes)
-        wtServerTime = (1/((1/wtMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(wtServerTime)
+        wtServerTime = (1/((1/wtMinutes)*(60/1)*(8/1))); paramDict.append(wtServerTime)
         filesWt = float(iatWtEntry.get()); paramDict.append(filesWt)
         iatWt = 1/((filesWt*12)/daysPerYear); paramDict.append(iatWt)
         meanWt = float(meanWtEntry.get()); paramDict.append(meanWt)
@@ -77,7 +73,7 @@ def parameterEntry(*args):
         # New file types - not currently processed
         nameAa = nameAaEntry.get(); paramDict.append(nameAa)
         aaMinutes = float(aaTimeEntry.get()); paramDict.append(aaMinutes)
-        aaServerTime = (1/((1/aaMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(aaServerTime)
+        aaServerTime = (1/((1/aaMinutes)*(60/1)*(8/1))); paramDict.append(aaServerTime)
         filesAa = float(iatAaEntry.get()); paramDict.append(filesAa)
         if filesAa > 0:
             iatAa = 1/((filesAa*12)/daysPerYear); paramDict.append(iatAa)
@@ -86,7 +82,7 @@ def parameterEntry(*args):
 
         nameTi = nameTiEntry.get(); paramDict.append(nameTi)
         tiMinutes = float(tiTimeEntry.get()); paramDict.append(tiMinutes)
-        tiServerTime = (1/((1/tiMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(tiServerTime)
+        tiServerTime = (1/((1/tiMinutes)*(60/1)*(8/1))); paramDict.append(tiServerTime)
         filesTi = float(iatTiEntry.get()); paramDict.append(filesTi)
         if filesTi >0:
             iatTi = 1/((filesTi*12)/daysPerYear); paramDict.append(iatTi)
@@ -95,7 +91,7 @@ def parameterEntry(*args):
 
         nameMe = nameMeEntry.get(); paramDict.append(nameMe)
         meMinutes = float(meTimeEntry.get()); paramDict.append(meMinutes)
-        meServerTime = (1/((1/meMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(meServerTime)
+        meServerTime = (1/((1/meMinutes)*(60/1)*(8/1))); paramDict.append(meServerTime)
         filesMe = float(iatMeEntry.get()); paramDict.append(filesMe)     
         if filesMe > 0:
             iatMe = 1/((filesMe*12)/daysPerYear); paramDict.append(iatMe)
@@ -104,7 +100,7 @@ def parameterEntry(*args):
 
         nameFs = nameFsEntry.get(); paramDict.append(nameFs)
         fsMinutes = float(fsTimeEntry.get()); paramDict.append(fsMinutes)
-        fsServerTime = (1/((1/fsMinutes)*(60/1)*(8/1)))*nservers; paramDict.append(fsServerTime)
+        fsServerTime = (1/((1/fsMinutes)*(60/1)*(8/1))); paramDict.append(fsServerTime)
         filesFs = float(iatFsEntry.get()); paramDict.append(filesFs)
         if filesFs >0:
             iatFs = 1/((filesFs*12)/daysPerYear); paramDict.append(iatFs)
@@ -114,6 +110,11 @@ def parameterEntry(*args):
         timeWindowYears = float(timeWindowEntry.get()); paramDict.append(timeWindowYears)
         paramDict.append(daysPerYear)
         timeWindow = timeWindowYears*daysPerYear; paramDict.append(timeWindow)
+        lowProb = float(lowPriorityEntry.get()); paramDict.append(lowProb)
+        medProb = float(medPriorityEntry.get()); paramDict.append(medProb)
+        highProb = float(highPriorityEntry.get()); paramDict.append(highProb)
+        vHighProb = float(vHighPriorityEntry.get()); paramDict.append(vHighProb)
+        dkTransferTime = float(dkTransferEntry.get()); paramDict.append(dkTransferTime)
     except ValueError:
         pass
 
@@ -124,8 +125,8 @@ def enterStartingConditions():
     global timeWindowEntry, devWtEntry, meanWtEntry, iatCoEntry, iatDkEntry, iatMaEntry
     global iatRdEntry, iatSvEntry, iatTgEntry, iatWtEntry, nserversEntry, coTimeEntry, dkTimeEntry, aaTimeEntry
     global maTimeEntry, njTimeEntry, rdTimeEntry, svTimeEntry, tgTimeEntry, wtTimeEntry, fsTimeEntry, tiTimeEntry, meTimeEntry
-    global iatAaEntry, iatTiEntry, iatNjEntry, nameAaEntry, nameTiEntry, iatMeEntry, iatFsEntry
-    global nameMeEntry, nameFsEntry, simFileNameEntry
+    global iatAaEntry, iatTiEntry, iatNjEntry, nameAaEntry, nameTiEntry, iatMeEntry, iatFsEntry, dkTransferEntry
+    global nameMeEntry, nameFsEntry, simFileNameEntry, lowPriorityEntry, medPriorityEntry, highPriorityEntry, vHighPriorityEntry
     '''
     This function draws the input GUI that contains the instructions, editable default values for
     simulation parameters, radio buttons for output selection, a submit button to confirm changes and a
@@ -148,25 +149,30 @@ def enterStartingConditions():
     #Instruction for parameter form
     tk.Label(mainframe, text = "Data Entry Instructions", font=("Arial", 25)).grid(row=i, column=3, columnspan = 2, sticky = W); i+=1
     tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
-    tk.Label(mainframe, text = "1. Adjust parameter values from default values as desired and choose a reporting option.").grid(row=i, column=3, columnspan = 2, sticky = W); i+=1
+    tk.Label(mainframe, text = "1. Adjust parameter values from default values as desired.").grid(row=i, column=3, columnspan = 2, sticky = W); i+=1
     tk.Label(mainframe, text = "2. Click the <<Submit Parameter Entries>> button.").grid(row=i, column=3, columnspan = 2, sticky = W); i+=1
     tk.Label(mainframe, text = "3. Click the <<Begin Simulation>> button.").grid(row=i, column=3, columnspan = 2, sticky = W); i+=1
     tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
     
-    
+    #Submit/BeginSim buttons
+    ttk.Button(mainframe, text="Submit Parameter Entries", command=parameterEntry).grid(row=i, column=3, sticky = W)
+    ttk.Button(mainframe, text="Begin Simulation", command=root.destroy).grid(row=i, column=5, sticky = W); i+=1  
+    #Space
+    tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
+
+    #Enclave transfer time
+    dkTransferEntry = StringVar()
+    dkTransferEntry = ttk.Entry(mainframe, width=7, textvariable=dkTransferEntry)
+    dkTransferEntry.insert(0, "1")
+    dkTransferEntry.grid(row=i, column=2, sticky=(W,E))
+    ttk.Label(mainframe, text="SIPR to NIPR transfer time (work days).").grid(row=i, column=3, sticky=W, padx=5, pady=5)
+
     #fileName 
     simFileNameEntry = StringVar()
     simFileNameEntry = ttk.Entry(mainframe, width=7, textvariable=simFileNameEntry)
     simFileNameEntry.insert(0, "testFile")
     simFileNameEntry.grid(row=i, column=4, sticky=(W,E))
-    ttk.Label(mainframe, text="File name prefix:").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
-
-    
-    tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
-    #Submit/BeginSim buttons
-    ttk.Button(mainframe, text="Submit Parameter Entries", command=parameterEntry).grid(row=i, column=3, sticky = W)
-    ttk.Button(mainframe, text="Begin Simulation", command=root.destroy).grid(row=i, column=5, sticky = W); i+=1  
-    #Space
+    ttk.Label(mainframe, text="File name prefix.").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
     tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
 
     #Personnel available for data ingestion
@@ -181,8 +187,31 @@ def enterStartingConditions():
     timeWindowEntry = ttk.Entry(mainframe, width=7, textvariable=timeWindowEntry)
     timeWindowEntry.insert(0, "1")
     timeWindowEntry.grid(row=i, column=4, sticky=(W,E))
-    ttk.Label(mainframe, text="Years to simulate:").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
+    ttk.Label(mainframe, text="Years to simulate.").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
 
+    #Space
+    tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
+    #data file priority proportions
+    lowPriorityEntry = StringVar()
+    lowPriorityEntry = ttk.Entry(mainframe, width=7, textvariable=lowPriorityEntry)
+    lowPriorityEntry.insert(0, "0.1")
+    lowPriorityEntry.grid(row=i, column=2, sticky=(W, E))
+    ttk.Label(mainframe, text="Low Priority(%).").grid(row=i, column=3, sticky=W, padx=5, pady=5)
+    medPriorityEntry = StringVar()
+    medPriorityEntry = ttk.Entry(mainframe, width=7, textvariable=medPriorityEntry)
+    medPriorityEntry.insert(0, "67.4")
+    medPriorityEntry.grid(row=i, column=4, sticky=(W, E))
+    ttk.Label(mainframe, text="Medium Priority(%).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
+    highPriorityEntry = StringVar()
+    highPriorityEntry = ttk.Entry(mainframe, width=7, textvariable=highPriorityEntry)
+    highPriorityEntry.insert(0, "30")
+    highPriorityEntry.grid(row=i, column=2, sticky=(W, E))
+    ttk.Label(mainframe, text="Low Priority(%).").grid(row=i, column=3, sticky=W, padx=5, pady=5)
+    vHighPriorityEntry = StringVar()
+    vHighPriorityEntry = ttk.Entry(mainframe, width=7, textvariable=vHighPriorityEntry)
+    vHighPriorityEntry.insert(0, "2.5")
+    vHighPriorityEntry.grid(row=i, column=4, sticky=(W, E))
+    ttk.Label(mainframe, text="Medium Priority(%).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
     #Space
     tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
 
@@ -206,8 +235,7 @@ def enterStartingConditions():
     ttk.Label(mainframe, text="Average Drake files per month.").grid(row=i, column=3, sticky=W, padx=5, pady=5)
     dkTimeEntry = StringVar()
     dkTimeEntry = ttk.Entry(mainframe, width=7, textvariable=dkTimeEntry)
-    ''' Assumes 1 working day (480 minutes) for SIPR to NIPR transfer '''
-    dkTimeEntry.insert(0, "540")
+    dkTimeEntry.insert(0, "60")
     dkTimeEntry.grid(row=i, column=4, sticky=(W, E))
     ttk.Label(mainframe, text="Average Drake processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
 
@@ -291,8 +319,7 @@ def enterStartingConditions():
     
     #Space
     tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
-    tk.Label(mainframe, text = "Potential New Sensors", font=("Arial", 10)).grid(row=i, column=3, columnspan = 2, sticky = W)
-    tk.Label(mainframe, text = "** Add 480 minutes per working day required to transfer files from SIPR to NIPR **").grid(row=i, column=4, columnspan = 2, sticky = N); i+=1
+    tk.Label(mainframe, text = "Potential New Sensors", font=("Arial", 10)).grid(row=i, column=3, columnspan = 2, sticky = W); i+=1
     #Space
     tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
 
@@ -311,7 +338,7 @@ def enterStartingConditions():
     aaTimeEntry = ttk.Entry(mainframe, width=7, textvariable=aaTimeEntry)
     aaTimeEntry.insert(0, "90")
     aaTimeEntry.grid(row=i, column=4, sticky=(W, E))
-    ttk.Label(mainframe, text="Average Aerial Armor processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
+    ttk.Label(mainframe, text="Average processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
     #Space
     tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
 
@@ -329,7 +356,7 @@ def enterStartingConditions():
     tiTimeEntry = ttk.Entry(mainframe, width=7, textvariable=tiTimeEntry)
     tiTimeEntry.insert(0, "120")
     tiTimeEntry.grid(row=i, column=4, sticky=(W, E))
-    ttk.Label(mainframe, text="Average Titan processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
+    ttk.Label(mainframe, text="Average processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
     #Space
     tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
 
@@ -347,7 +374,7 @@ def enterStartingConditions():
     meTimeEntry = ttk.Entry(mainframe, width=7, textvariable=meTimeEntry)
     meTimeEntry.insert(0, "120")
     meTimeEntry.grid(row=i, column=4, sticky=(W, E))
-    ttk.Label(mainframe, text="Average Medusa processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
+    ttk.Label(mainframe, text="Average processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
     #Space
     tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
 
@@ -365,7 +392,7 @@ def enterStartingConditions():
     fsTimeEntry = ttk.Entry(mainframe, width=7, textvariable=fsTimeEntry)
     fsTimeEntry.insert(0, "120")
     fsTimeEntry.grid(row=i, column=4, sticky=(W, E))
-    ttk.Label(mainframe, text="Average FS/MLIDS processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
+    ttk.Label(mainframe, text="Average processing time (minutes).").grid(row=i, column=5, sticky=W, padx=5, pady=5); i+=1
     #Space
     tk.Label(mainframe, text = "").grid(row=i, column=2, columnspan = 2, sticky = W); i+=1
    

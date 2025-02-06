@@ -3,11 +3,13 @@ import pandas as pd
 import tkinter as tk
 from tkinter import *
 from tkinter import ttk
-import csv
 import numpy as np
+import ctypes
 
 from plottingModule import systemBoxPlot
 
+def showErrorWindow(errorString):
+    ctypes.windll.user32.MessageBoxW(0, "Error", "Error", 0)
 
 def get_current_date():
     x = datetime.today()
@@ -167,7 +169,3 @@ def createStayStats(fileName):
     stdDevStay = s.std(); stayStats.append(stdDevStay)
 
     return stayStats
-
-def createOutputTable():
-    filePath = "./capDevDataIngestSim/data/"
-    #filePath = "./data/"
