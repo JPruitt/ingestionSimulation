@@ -15,7 +15,7 @@ def setParameterValues(paramDict):
     global timeWindowYears, daysPerYear, timeWindow, simFileName, lowProb, medProb, highProb, vHighProb, dkTransferTime
     global coServerTime, coMinutes, dkServerTime, dkMinutes, maServerTime, maMinutes, njServerTime, njMinutes, rdServerTime, rdMinutes, svServerTime, svMinutes
     global tgServerTime, tgMinutes, wtServerTime, wtMinutes, aaServerTime, aaMinutes, tiServerTime, tiMinutes, meServerTime, meMinutes, fsServerTime, fsMinutes
-
+    
     paramValues = paramDict
     i=0
 
@@ -82,7 +82,7 @@ def setParameterValues(paramDict):
     medProb = float(paramValues[i]); i+=1
     highProb = float(paramValues[i]); i+=1
     vHighProb = float(paramValues[i]); i+=1
-    dkTransferTime = float(paramValues[i])
+    dkTransferTime = float(paramValues[i]); i+=1
 
     runSimulation()
 
@@ -478,8 +478,8 @@ def do_animation():
     
     sliderMax = [8, 900, 900, 900, 900, 900, 900, 
                 900, 900, 900, 900, 900, 900, 10, 
-                300, 300, 300, 300, 300, 300, 300, 300, 
-                200, 300, 300, 300, 300, 300, 100, 100,
+                900, 900, 900, 900, 900, 900, 900, 900, 
+                900, 900, 900, 900, 900, 900, 100, 100,
                 100, 100, 10]
     
     sliderAction = [setNservers, setCoServerTime, setDkServerTime, setMaServerTime, setNjServerTime, setAaServerTime, setMeServerTime, 
@@ -623,14 +623,12 @@ class dataFile(sim.Component):
         if self.name() == "DK":
             self.hold(sim.Normal(1, .5).bounded_sample(0))
         
-        # Enter main system and request an analyst for data ingestion
+        # Enter queues system and request an analyst for data ingestion
         self.enter(system)
-        self.request(servers)    
-        
-        # Enter sensor file type specific system, for tracking purposes only
         self.enter(self.fileQueue)
+        self.request(servers)    
         self.request(self.fileRequest)     
-        
+       
         # Ingest data
         self.hold(sim.Exponential(self.serverTime).sample())
         self.release(self.fileRequest)
