@@ -854,6 +854,7 @@ if __name__ == "__main__":
     coServerTime = (1/((1/coMinutes)*(60/1)*(8/1)))
     filesCo = 14
     iatCo = 1/((filesCo*12)/daysPerYear)
+    dkMinutes = 60
     dkServerTime = (1/((1/dkMinutes)*(60/1)*(8/1)))
     filesDk = 3
     iatDk = 1/((filesDk*12)/daysPerYear)
